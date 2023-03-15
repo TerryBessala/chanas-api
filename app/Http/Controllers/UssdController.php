@@ -40,7 +40,7 @@ class UssdController extends Controller
             $phone = substr($phone, strlen("237"));
         }
         $check_number = $this->check($phone);
-        $payment_ref = "chanas-" . Str::uuid()->toString();
+        $payment_ref = "chanas-" .$this->generateRandomString();
         $response = $this->paymentService->mobilePay(1, $phone, 10, $payment_ref);
         Log::info($response);
         if ($response && array_key_exists("paymentId", $response)) {
@@ -55,6 +55,16 @@ class UssdController extends Controller
         } else {
             return response()->json(array('errcode' => 404, 'message' => 'Impossible de trouver ce que vous chercher'), 404);
         }
+    }
+
+    public function generateRandomString($length = 10) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[random_int(0, $charactersLength - 1)];
+        }
+        return $randomString;
     }
 
 
