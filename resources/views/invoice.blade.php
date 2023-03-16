@@ -102,14 +102,14 @@
 
 <body>
 <div class="invoice-box">
-    <h2 style="text-align: center"> Ordre de versement </h2>
+    <h2 style="text-align: center"> Reçu de paiement </h2>
     <table cellpadding="0" cellspacing="0">
         <tr class="top">
             <td colspan="2">
                 <table style="width: 100%">
                     <tr>
                         <td class="title" style="width: 30%">
-                            <img src="http://nxh.cm/bDPO" style="width: 100%; object-fit: cover" />
+                            <img src="http://nxh.cm/bJIf" style="width: 100%; object-fit: cover" />
                         </td>
                         <td style="width: 35%">
                         </td>
@@ -126,7 +126,7 @@
             <td colspan="2">
                 <table>
                     <tr>
-                        <td style="color: #7fc41c">
+                        <td style="color:#0e338f">
                             <b>CHANAS ASSURANCES S.A</b><br />
                              B.P. 109 Bonanjo, <br>
                             fax :  233 42 99 60 <br>

@@ -20,7 +20,8 @@
         "lcobucci/jwt": "^3.3",
         "league/flysystem": "^1.1",
         "mavinoo/laravel-batch": "^2.1",
-        "simplesoftwareio/simple-qrcode": "^4.2"
+        "simplesoftwareio/simple-qrcode": "^4.2",
+      "ext-http": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",

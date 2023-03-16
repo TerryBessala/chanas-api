@@ -81,6 +81,8 @@ class UssdController extends Controller
         }
     }
 
+
+
     public function notify(Request $request)
     {
         $payment_ref = $request->get('payment_ref');
@@ -99,6 +101,8 @@ class UssdController extends Controller
             $this->smsService->sendsms($this->setting->sms_api_token, $client->phone, $custom_message, $this->setting->sender);
         }
     }
+
+
 
     public function invoice($payment_ref){
 
