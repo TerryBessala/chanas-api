@@ -19,6 +19,8 @@ $router->group(['prefix' => 'api/v1'], function () use ($router) {
 
     $router->post('client-info',  ['uses' => 'UssdController@clientInfo']);
     $router->post('payment',  ['uses' => 'UssdController@payment']);
+    $router->post('callback',  ['uses' => 'UssdController@notify']);
+    $router->get('invoice/{payment_ref}', ['uses' => 'UssdController@invoice']);
 
 
     $router->group(['middleware' => 'auth'], function () use ($router) {

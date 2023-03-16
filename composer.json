@@ -8,8 +8,11 @@
         "php": "^7.2.5",
         "ext-curl": "^7.2",
         "ext-json": "*",
+        "ext-pdo": "*",
         "ext-simplexml": "*",
+        "barryvdh/laravel-dompdf": "^2.0",
         "darkaonline/swagger-lume": "^7.0",
+        "dompdf/dompdf": "^2.0",
         "flipbox/lumen-generator": "^7.0",
         "guzzlehttp/guzzle": "^7.0",
         "illuminate/mail": "^7.26",
@@ -17,7 +20,7 @@
         "lcobucci/jwt": "^3.3",
         "league/flysystem": "^1.1",
         "mavinoo/laravel-batch": "^2.1",
-        "ext-pdo": "*"
+        "simplesoftwareio/simple-qrcode": "^4.2"
     },
     "require-dev": {
         "fzaninotto/faker": "^1.9.1",

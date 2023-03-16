@@ -3,22 +3,29 @@
 namespace App\Http\Controllers;
 
 use App\Library\PaymentService;
+use App\Library\SMSAPIService;
 use App\Models\Setting;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Laravel\Lumen\Routing\Controller;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class UssdController extends Controller
 {
 
     protected $paymentService;
     protected $setting;
+    protected $smsService;
 
     public function __construct()
     {
         $this->paymentService = new  PaymentService();
         $this->setting = Setting::first();
+        $this->smsService = new SMSAPIService();
     }
 
     public function json($errcode, $message, $data = null)
@@ -29,21 +36,38 @@ class UssdController extends Controller
     public function clientInfo(Request $request)
     {
         $name = $request->name;
+        $phone = $request->msisdn;
+        if (substr($phone, 0, strlen("237")) == "237") {
+            $phone = substr($phone, strlen("237"));
+        }
+        $mobile=$request->phone;
+        $email = $request->email;
+        $estimate_value = $request->estimate_value;
+        $nb_piece = $request->nb_piece;
+        $amount = $request->amount;
+        DB::select('call sp_client_create(?,?,?,?,?,?,?)', array($name, $email, $mobile, $estimate_value, $nb_piece, $amount, 1));
+
         $menus[] = "Monsieur/Madame $name vous souhaitez payer 10 FCFA pour l'assurance habitation \n 1. Confirmer \n 2. Annuler";
         return $this->json(200, 'Client enregistré', ['menus' => $menus]);
     }
 
     public function payment(Request $request)
     {
-        $phone = $request->msisdn;
+//        $phone = $request->msisdn;
+        $phone=$request->phone;
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
         }
+
+
         $check_number = $this->check($phone);
-        $payment_ref = "chanas-" .$this->generateRandomString();
+        $payment_ref = "chanas-" . $this->generateRandomString();
+
+        $client = DB::select('call sp_client_find(?)', [$phone])[0];
         $response = $this->paymentService->mobilePay(1, $phone, 10, $payment_ref);
         Log::info($response);
         if ($response && array_key_exists("paymentId", $response)) {
+            $result = DB::select('call sp_client_update(?,?,?,?)', [$client->id, $response["paymentId"], 'PENDING', $payment_ref]);
 
             if ($check_number['code'] == "*126#") {
                 return response()->json(array('errcode' => 200, 'message' => 'Le payement de votre assurance habitations ' . ' a ete initié. Tapez *126#'));
@@ -57,7 +81,64 @@ class UssdController extends Controller
         }
     }
 
-    public function generateRandomString($length = 10) {
+    public function notify(Request $request)
+    {
+        $payment_ref = $request->get('payment_ref');
+        $order_id = $request->get('order_id');
+        $status = $request->get('status');
+
+
+        $client = DB::select('call sp_client_update_status(?,?,?,?)',[checkstatus($status),$payment_ref,$order_id,date_to_utc(date("Y-m-d H:i:s"))])[0];
+
+        if (checkstatus($status) !== paysuccess() or checkstatus($status) === paysuccess())
+        {
+            $invoice_url = short_link("".url("/api/v1/invoice")."/".$order_id);
+
+            $custom_message = "Cher(Chère) Monieur/ Madame le payment de l'assurance HABITATION de votre paiement a réussi cliquer sur le lien pour télécharger votre facture. $invoice_url";
+
+            $this->smsService->sendsms($this->setting->sms_api_token, $client->phone, $custom_message, $this->setting->sender);
+        }
+    }
+
+    public function invoice($payment_ref){
+
+        try {
+            Log::info($payment_ref);
+            $payments =  DB::select('call sp_client_find_payment(?)', array($payment_ref));
+            $invoice["services"] = array();
+            $invoice["total"] = 0;
+            if ($payments != null){
+                $invoice["name"] = $payments[0]->name;
+                $invoice["phone"] = $payments[0]->phone;
+                $invoice["Transaction_id"] = $payments[0]->payment_id;
+                $invoice['date'] = date_to_utc($payments[0]->payment_date);
+                foreach ($payments as $payment){
+                    $invoice["total"] = $invoice["total"] + $payment->amount;
+                    $service['name'] = "ASSURANCE HABITATION";
+                    $service['amount'] = $payment->amount;
+                    $invoice["services"][] = $service;
+                }
+                $name = "qrcode-$payment_ref.svg";
+                $file_path = "../public/public/uploads/".$name;
+                if (!file_exists($file_path)){
+                    try{
+                        QrCode::size(100)->format('svg')->generate($payments[0]->payment_id, $file_path);
+                    }catch (Exception $e){
+                        Log::info($e->getMessage());
+                    }
+                }
+                $pdf = PDF::loadView("invoice", compact('invoice', 'name'));
+                return $pdf->download('invoice.pdf');
+            }
+        }
+        catch (Exception $e){
+            Log::info($e->getMessage());
+        }
+        abort(404);
+        return null;
+    }
+    public function generateRandomString($length = 10)
+    {
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';

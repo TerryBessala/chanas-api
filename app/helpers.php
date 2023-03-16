@@ -63,6 +63,26 @@ function short_link($link)
     $urlShortener = new UrlShortenerService();
     return $urlShortener->createLink($link)['data']['short_url'];
 }
+function paysuccess()
+{
+    return "PAYÉ";
+}
+if (!function_exists('checkstatus')) {
+
+    /**
+     * @param $amount
+     * @return string
+     */
+    function checkstatus($status)
+    {
+        if ($status == "SUCCESS") {
+            return "PAYÉ";
+        } else {
+            return "NON PAYÉ";
+        }
+    }
+
+}
 
 if (!function_exists('cut_string')) {
     /**

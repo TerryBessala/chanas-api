@@ -62,9 +62,9 @@ $app->configure('app');
 $app->configure('queue');
 $app->configure('mail');
 $app->configure('database');
-$app->configure('swagger-lume');
 $app->configure('credentials');
 $app->configure('filesystems');
+$app->configure('dompdf');
 
 /*
 |--------------------------------------------------------------------------
@@ -85,7 +85,7 @@ $app->middleware([
 ]);
 
 $app->routeMiddleware([
-     'auth' => App\Http\Middleware\Authenticate::class,
+    'auth' => App\Http\Middleware\Authenticate::class,
 ]);
 
 /*
@@ -102,10 +102,10 @@ $app->routeMiddleware([
 $app->register(App\Providers\AppServiceProvider::class);
 $app->register(App\Providers\AuthServiceProvider::class);
 $app->register(Mavinoo\Batch\BatchServiceProvider::class);
+$app->register(\Barryvdh\DomPDF\ServiceProvider::class);
 
 // $app->register(App\Providers\EventServiceProvider::class);
 $app->register(Flipbox\LumenGenerator\LumenGeneratorServiceProvider::class);
-$app->register(\SwaggerLume\ServiceProvider::class);
 
 $app->instance('path.config', app()->basePath() . DIRECTORY_SEPARATOR . 'config');
 $app->instance('path.storage', app()->basePath() . DIRECTORY_SEPARATOR . 'storage');

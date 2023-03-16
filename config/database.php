@@ -47,7 +47,7 @@ return [
             'database' => credentials('db_database'),
             'username' => credentials('db_username'),
             'password' => credentials('db_password'),
-            'unix_socket' => env('DB_SOCKET', ''),
+            'unix_socket' => credentials('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',

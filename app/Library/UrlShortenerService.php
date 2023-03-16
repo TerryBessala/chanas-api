@@ -24,7 +24,9 @@ class UrlShortenerService
         $data = array(
             'api_key' => $this->setting->url_shortener_api_key,
             'long_url' => $link,
-            'tag' => 'taxespay');
+            'tag' => 'chanas');
+
+        Log::info(json_encode($data));
 
         return json_decode(
             Http::withHeaders([

@@ -10,6 +10,7 @@ namespace App\Library;
 
 use App\Models\Setting;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 
 class SMSAPIService
@@ -22,12 +23,11 @@ class SMSAPIService
         $this->setting = Setting::first();
     }
 
-    public function sendsms($numbers, $message, $sender)
+    public function sendsms($token, $numbers ,$message, $sender)
     {
         $client = new Client();
         $form_params = [
-            'user' => $this->setting->username,
-            'password' => $this->setting->password,
+            'token' => $token,
             'mobiles' => $numbers,
             'sms' => $message,
             'senderid' => $sender];
@@ -36,7 +36,9 @@ class SMSAPIService
             'headers' => ['Accept' => 'application/json'],
             'form_params' => $form_params
         ]);
+
         $result = $response->getBody()->getContents();
+        Log::info($result);
         return $result;
     }
 }
