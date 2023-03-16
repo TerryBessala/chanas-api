@@ -127,11 +127,9 @@
                 <table>
                     <tr>
                         <td style="color: #7fc41c">
-                            <b>FILIALE DU GROUPE SONAM ASSURANCES</b><br />
-                            Immeuble Kassap, Boulevard de la Liberté- 2e Etage <br>
-                            B.P : 4493 Douala-Cameroun <br>
-                            Tél : +(237) 233 42 13 11 <br>
-                            Port : 691 621 624
+                            <b>CHANAS ASSURANCES S.A</b><br />
+                             B.P. 109 Bonanjo, <br>
+                            fax :  233 42 99 60 <br>
                         </td>
                         <td>
                             <b>{{ $invoice["name"] }}</b> <br />
