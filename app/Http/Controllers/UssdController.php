@@ -53,7 +53,7 @@ class UssdController extends Controller
     public function payment(Request $request)
     {
         $phone = $request->msisdn;
-        Log::info($request->all());
+        Log::info(json_encode($request->all()));
 
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
