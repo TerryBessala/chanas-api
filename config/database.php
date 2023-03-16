@@ -42,12 +42,12 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-            'host' => env('db_host'),
-            'port' => env('DB_PORT', '3306'),
-            'database' => env('db_database'),
-            'username' => env('db_username'),
-            'password' => env('db_password'),
-            'unix_socket' => env('DB_SOCKET', ''),
+            'host' => credentials('db_host'),
+            'port' => credentials('DB_PORT', '3306'),
+            'database' => credentials('db_database'),
+            'username' => credentials('db_username'),
+            'password' => credentials('db_password'),
+            'unix_socket' => credentials('DB_SOCKET', ''),
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
