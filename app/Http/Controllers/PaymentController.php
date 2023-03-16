@@ -19,7 +19,7 @@ class PaymentController extends  Controller
         $per_page = $request->per_page;
         $paginate =$request->paginate;
 
-        $result['payment'] = DB::select(' call sp_client_list(?,?,?)',[$paginate,$page,$per_page]);
+        $result['data'] = DB::select(' call sp_client_list(?,?,?)',[$paginate,$page,$per_page]);
 
 
         $result['total'] = DB::select(' call count_client()')[0]->total ;

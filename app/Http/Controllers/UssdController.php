@@ -43,8 +43,7 @@ class UssdController extends Controller
         $email = $request->email;
         $estimate_value = $request->estimate_value;
         $nb_piece = $request->nb_piece;
-        $amount = $request->amount;
-        DB::select('call sp_client_create(?,?,?,?,?,?,?)', array($name, $email, $phone, $estimate_value, $nb_piece, $amount, 1));
+        DB::select('call sp_client_create(?,?,?,?,?,?,?)', array($name, $email, $phone, $estimate_value, $nb_piece, 1));
 
         $menus[] = "Monsieur/Madame $name vous souhaitez payer 10 FCFA pour l'assurance habitation \n 1. Confirmer \n 2. Annuler";
         return $this->json(200, 'Client enregistré', ['menus' => $menus]);
@@ -90,15 +89,14 @@ class UssdController extends Controller
 
 
         $client = DB::select('call sp_client_update_status(?,?,?,?)',[checkstatus($status),$payment_ref,$order_id,date_to_utc(date("Y-m-d H:i:s"))])[0];
-
         if (checkstatus($status) !== paysuccess() or checkstatus($status) === paysuccess())
-        {
-            $invoice_url = short_link("".url("/api/v1/invoice")."/".$order_id);
+            {
+                $invoice_url = short_link("".url("/api/v1/invoice")."/".$order_id);
 
-            $custom_message = "Cher(Chère) Monieur/ Madame le payment de l'assurance HABITATION de votre paiement a réussi cliquer sur le lien pour télécharger votre facture. $invoice_url";
+                $custom_message = "Cher(Chère) Monieur/ Madame le payment de l'assurance HABITATION de votre paiement a réussi cliquer sur le lien pour télécharger votre facture. $invoice_url";
 
-            $this->smsService->sendsms($this->setting->sms_api_token, $client->phone, $custom_message, $this->setting->sender);
-        }
+                $this->smsService->sendsms($this->setting->sms_api_token, $client->phone, $custom_message, $this->setting->sender);
+            }
     }
 
 
