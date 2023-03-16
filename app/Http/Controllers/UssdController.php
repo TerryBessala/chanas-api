@@ -43,7 +43,7 @@ class UssdController extends Controller
         $email = $request->email;
         $estimate_value = $request->estimate_value;
         $nb_piece = $request->nb_piece;
-        DB::select('call sp_client_create(?,?,?,?,?,?,?)', array($name, $email, $phone, $estimate_value, $nb_piece, 1));
+        DB::select('call sp_client_create(?,?,?,?,?,?)', array($name, $email, $phone, $estimate_value, $nb_piece, 1));
 
         $menus[] = "Monsieur/Madame $name vous souhaitez payer 10 FCFA pour l'assurance habitation \n 1. Confirmer \n 2. Annuler";
         return $this->json(200, 'Client enregistré', ['menus' => $menus]);
