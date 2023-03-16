@@ -27,7 +27,7 @@ class PaymentController extends  Controller
         $result['page'] = $page ;
         $result['per_page'] = $per_page;
         $result['from'] = (($page - 1) * $per_page) + 1;
-        $result['to'] =  $result['from'] + sizeof($result['payment']) - 1;
+        $result['to'] =  $result['from'] + sizeof($result['data']) - 1;
         return $this->json(200, 'OK', $result);
 
     }
