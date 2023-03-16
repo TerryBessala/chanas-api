@@ -53,11 +53,11 @@ class UssdController extends Controller
     public function payment(Request $request)
     {
         $phone = $request->msisdn;
-//        $phone=$request->phone;
+        Log::info($request->all());
+
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
         }
-
 
         $check_number = $this->check($phone);
         $payment_ref = "chanas-" . $this->generateRandomString();
