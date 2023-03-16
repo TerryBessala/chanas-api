@@ -62,7 +62,7 @@ class PaymentService
             "transactional" => "yes",
             "amount" => (string)$amount
         );
-        json_encode("data payment: ".$data1);
+        json_encode("data payment: ".json_encode($data1));
         $result = json_decode(
             Http::withHeaders([
                 'Accept' => 'application/json',
