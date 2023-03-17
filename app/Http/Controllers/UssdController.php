@@ -96,7 +96,7 @@ class UssdController extends Controller
             {
                 $invoice_url = short_link("".url("/api/v1/invoice")."/".$order_id);
 
-                $custom_message = "Cher(Chère) Monieur/ Madame le payment de l'assurance HABITATION de votre paiement a réussi cliquer sur le lien pour télécharger votre facture. $invoice_url";
+                $custom_message = "Cher(e) Monsieur/ Madame le paiement de vitre assurance HABITATION a réussi cliquer sur le lien pour télécharger votre facture. $invoice_url";
 
                 $this->smsService->sendsms($this->setting->sms_api_token, $client->phone, $custom_message, $this->setting->sender);
             }
