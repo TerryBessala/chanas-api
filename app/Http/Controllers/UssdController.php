@@ -49,7 +49,7 @@ class UssdController extends Controller
     public function payment(Request $request)
     {
         $phone = $request->msisdn;
-        Log::info(json_encode($request->all()));
+        Log::info('data send buy USSD: '.json_encode($request->all()));
 
         $name = $request->name;
         $phone = $request->msisdn;
