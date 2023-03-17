@@ -109,7 +109,7 @@
                 <table style="width: 100%">
                     <tr>
                         <td class="title" style="width: 30%">
-                            <img src="http://nxh.cm/bJIf" style="width: 100%; object-fit: cover" />
+                            <img src="https://nxh.cm/uploads/1678936800logochanas.webp" style="width: 100%; object-fit: cover" />
                         </td>
                         <td style="width: 35%">
                         </td>
