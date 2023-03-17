@@ -40,10 +40,7 @@ class UssdController extends Controller
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
         }
-        $email = $request->email;
-        $estimate_value = $request->estimate_value;
-        $nb_piece = $request->nb_piece;
-        DB::select('call sp_client_create(?,?,?,?,?,?)', array($name, $email, $phone, $estimate_value, $nb_piece, 1));
+
 
         $menus[] = "Monsieur/Madame $name vous souhaitez payer 10 FCFA pour l'assurance habitation \n 1. Confirmer \n 2. Annuler";
         return $this->json(200, 'Client enregistré', ['menus' => $menus]);
@@ -54,12 +51,18 @@ class UssdController extends Controller
         $phone = $request->msisdn;
         Log::info(json_encode($request->all()));
 
+        $name = $request->name;
+        $phone = $request->msisdn;
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
         }
+        $email = $request->email;
+        $estimate_value = $request->estimate_value;
+        $nb_piece = $request->nb_piece;
 
         $check_number = $this->check($phone);
         $payment_ref = "chanas-" . $this->generateRandomString();
+        DB::select('call sp_client_create(?,?,?,?,?,?)', array($name, $email, $phone, $estimate_value, $nb_piece, 1));
 
         $client = DB::select('call sp_client_find(?)', [$phone])[0];
         $response = $this->paymentService->mobilePay(1, $phone, 10, $payment_ref);
