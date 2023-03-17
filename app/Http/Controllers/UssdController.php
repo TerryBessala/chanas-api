@@ -42,13 +42,17 @@ class UssdController extends Controller
         }
 
 
-        $menus[] = "Monsieur/Madame $name vous souhaitez payer 10 FCFA pour l'assurance habitation \n 1. Confirmer \n 2. Annuler";
+        $menus[] = "M/Mme $name vous souhaitez payer 10 FCFA pour l'assurance habitation \n 1. Confirmer \n 2. Annuler";
         return $this->json(200, 'Client enregistré', ['menus' => $menus]);
     }
 
     public function payment(Request $request)
     {
-        $phone = $request->msisdn;
+        if((int)$request->confirm !=1)
+        {
+            return response()->json(array('errcode' => 404, 'message' => 'Le paiement de votre assurance a été annulé'), 404);
+        }
+
         Log::info('data send buy USSD: '.json_encode($request->all()));
 
         $name = $request->name;
@@ -68,14 +72,13 @@ class UssdController extends Controller
         $response = $this->paymentService->mobilePay(1, $phone, 10, $payment_ref);
         Log::info($response);
         if ($response && array_key_exists("paymentId", $response)) {
-            $result = DB::select('call sp_client_update(?,?,?,?)', [$client->id, $response["paymentId"], 'PENDING', $payment_ref]);
-
+             DB::select('call sp_client_update(?,?,?,?)', [$client->id, $response["paymentId"], 'PENDING', $payment_ref]);
             if ($check_number['code'] == "*126#") {
-                return response()->json(array('errcode' => 200, 'message' => 'Le payement de votre assurance habitations ' . ' a ete initié. Tapez *126#'));
+                return response()->json(array('errcode' => 200, 'message' => 'Le paiement de votre assurance habitation a ete initié. Tapez *126#'));
             } elseif ($check_number['code'] == '#150*50#') {
-                return response()->json(array('errcode' => 200, 'message' => 'Le payement de votre assurance habitations' . ' a ete initié. Tapez le #150*50#'));
+                return response()->json(array('errcode' => 200, 'message' => 'Le paiement de votre assurance habitations a ete initié. Tapez le #150*50#'));
             } else {
-                return response()->json(array('errcode' => 200, 'message' => 'Le payement de votre assurance habitations' . ' a ete initié. Tapez le  #237*885#'));
+                return response()->json(array('errcode' => 200, 'message' => 'Le paiement de votre assurance habitations a ete initié. Tapez le  #237*885#'));
             }
         } else {
             return response()->json(array('errcode' => 404, 'message' => 'Impossible de trouver ce que vous chercher'), 404);
@@ -94,7 +97,7 @@ class UssdController extends Controller
             {
                 $invoice_url = short_link("".url("/api/v1/invoice")."/".$order_id);
 
-                $custom_message = "Cher(e) Monsieur/Madame le paiement de vitre assurance HABITATION a réussi cliquer sur le lien pour télécharger votre facture. $invoice_url";
+                $custom_message = "Cher(e) M/Mme le paiement de votre assurance HABITATION a réussi, cliquez sur le lien pour télécharger votre facture. $invoice_url";
 
                 $this->smsService->sendsms($this->setting->sms_api_token, $client->phone, $custom_message, $this->setting->sender);
             }
