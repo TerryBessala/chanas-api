@@ -35,7 +35,7 @@ class UssdController extends Controller
 
     public function clientInfo(Request $request)
     {
-        $name = $request->name;
+        $name = urldecode( $request->name);
         $phone = $request->msisdn;
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
@@ -55,7 +55,7 @@ class UssdController extends Controller
 
         Log::info('data send buy USSD: '.json_encode($request->all()));
 
-        $name = $request->name;
+        $name = urldecode( $request->name);
         $phone = $request->msisdn;
         if (substr($phone, 0, strlen("237")) == "237") {
             $phone = substr($phone, strlen("237"));
