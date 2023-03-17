@@ -167,6 +167,7 @@
         </tr>
         <tr>
             <img src="{{ base_path("public/public/uploads/".$name) }}" alt=""/>
+
         </tr>
         <tr class="total" >
             <td></td>
